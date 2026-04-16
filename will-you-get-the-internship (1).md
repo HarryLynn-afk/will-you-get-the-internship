@@ -15,7 +15,7 @@ Player enters their name and picks their dream job role → answers 5 fun tech i
 - **Framework:** Next.js (App Router)
 - **Styling:** CSS (globals.css + component styles)
 - **Database:** MySQL (TiDB for production)
-- **AI:** Gemini API (Google, free tier)
+- **AI:** Groq API
 - **Deployment:** Vercel
 - **Environment:** `.env.local` for DB and API credentials
 
@@ -143,7 +143,7 @@ app/
       [id]/
         route.js             # PUT, DELETE single question
     results/
-      route.js               # GET all results, POST new result (calls Gemini API)
+      route.js               # GET all results, POST new result (calls Groq API)
       [id]/
         route.js             # GET single result, DELETE
   globals.css
@@ -170,10 +170,10 @@ DB_PASS=your_password
 DB_NAME=internship_quiz
 DB_PORT=4000
 DB_SSL=true
-GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
-Get your free Gemini API key at: https://aistudio.google.com/app/apikey
+Get your Groq API key from the Groq Console.
 
 ---
 
@@ -280,7 +280,7 @@ Get your free Gemini API key at: https://aistudio.google.com/app/apikey
 
 ### `POST /api/results`
 - Body: `{ player_name, job_role, score, answers_summary }`
-- Call Gemini API to generate verdict and roast
+- Call Groq API to generate verdict and roast
 - Save to DB with verdict and roast
 - Return: saved result with id
 
@@ -294,38 +294,41 @@ Get your free Gemini API key at: https://aistudio.google.com/app/apikey
 
 ---
 
-## Gemini API Call (inside POST /api/results)
-
-Install the package first:
-```bash
-npm install @google/generative-ai
-```
+## Groq API Call (inside POST /api/results)
 
 ```javascript
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-const prompt = `You are a brutally honest but funny tech recruiter.
-A candidate named ${player_name} just interviewed for a ${job_role} position.
+const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+  },
+  body: JSON.stringify({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a brutally honest but funny tech recruiter. Respond only with valid JSON.",
+      },
+      {
+        role: "user",
+        content: `A candidate named ${player_name} just interviewed for a ${job_role} position.
 They scored ${score} out of 5 on a tech interview quiz.
 Their answers summary: ${answers_summary}
 
-Give them a verdict and write a short funny roast (2-3 sentences max) based on their performance and the specific role they wanted.
+Respond only as JSON in this exact shape:
+{"verdict":"HIRED","roast":"your roast here"}`,
+      },
+    ],
+    response_format: {
+      type: "json_object",
+    },
+  }),
+});
 
-Respond in this exact JSON format with no extra text:
-{"verdict": "HIRED", "roast": "your roast here"}
-
-Verdict must be exactly one of: HIRED, GHOSTED, REJECTED
-- HIRED: score 5/5
-- GHOSTED: score 3-4/5
-- REJECTED: score 0-2/5`;
-
-const result = await model.generateContent(prompt);
-const text = result.response.text();
-const clean = text.replace(/```json|```/g, "").trim();
-const parsed = JSON.parse(clean);
+const data = await response.json();
+const parsed = JSON.parse(data.choices[0].message.content);
 // parsed.verdict and parsed.roast
 ```
 
@@ -367,17 +370,17 @@ Props: `rank`, `name`, `job_role`, `score`, `verdict`
 | 3 | QuestionCard, ResultCard, LeaderboardCard components with props, .map() |
 | 4 | useState for quiz flow, useEffect for data fetching, useParams, useRouter |
 | 5 | CRUD flow for questions and results, controlled forms in admin |
-| 6 | MySQL API routes, db.js pool, .env.local, Gemini API call, Vercel deploy |
+| 6 | MySQL API routes, db.js pool, .env.local, Groq API call, Vercel deploy |
 
 ---
 
 ## Build Order (recommended)
 
-1. Set up Next.js project and install mysql2 and @google/generative-ai
+1. Set up Next.js project and install mysql2
 2. Create `utils/db.js` and connect to TiDB
 3. Create DB tables and seed questions
 4. Build API routes for questions (GET, POST, PUT, DELETE)
-5. Build API routes for results (GET, POST with Gemini call, DELETE)
+5. Build API routes for results (GET, POST with Groq call, DELETE)
 6. Test all API routes with Postman before touching frontend
 7. Build Admin page (CRUD for questions)
 8. Build Home page (name + job role dropdown form)
@@ -395,6 +398,6 @@ Props: `rank`, `name`, `job_role`, `score`, `verdict`
 - Use `className` not `class` in JSX
 - Use `router.push()` for redirects after mutations not `window.location.href`
 - Use loading and error states on every page that fetches data
-- Keep the Gemini API call only in the server-side API route never in the frontend
-- The GEMINI_API_KEY must stay in `.env.local` and never be exposed to the client
+- Keep the Groq API call only in the server-side API route never in the frontend
+- The GROQ_API_KEY must stay in `.env.local` and never be exposed to the client
 - Store player name and job role in `localStorage` to pass between home and quiz pages
