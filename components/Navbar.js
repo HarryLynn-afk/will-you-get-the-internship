@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
-const navItems = [
+const baseNavItems = [
   { href: "/", label: "Home" },
   { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/admin", label: "Admin" },
 ];
 
 function isActive(pathname, href) {
@@ -17,8 +17,27 @@ function isActive(pathname, href) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function Navbar() {
+export default function Navbar({ session, hasAdmin }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    try {
+      setLoggingOut(true);
+      await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+    } finally {
+      router.push("/");
+      router.refresh();
+      setLoggingOut(false);
+    }
+  }
+
+  const navItems = session?.role === "admin"
+    ? [...baseNavItems, { href: "/admin", label: "Admin" }]
+    : baseNavItems;
 
   return (
     <header className="topbar">
@@ -26,17 +45,44 @@ export default function Navbar() {
         <Link className="navBrand" href="/">
           Will You Get the Internship?
         </Link>
-        <nav className="navLinks" aria-label="Primary">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              className={`navLink ${isActive(pathname, item.href) ? "isActive" : ""}`}
-              href={item.href}
+        <div className="navActions">
+          <nav className="navLinks" aria-label="Primary">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                className={`navLink ${isActive(pathname, item.href) ? "isActive" : ""}`}
+                href={item.href}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          {session?.role === "admin" ? (
+            <button
+              className="navButton"
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
             >
-              {item.label}
+              {loggingOut ? "Logging out..." : "Logout"}
+            </button>
+          ) : hasAdmin ? (
+            <Link
+              className={`navButton ${isActive(pathname, "/login") ? "isActive" : ""}`}
+              href="/login"
+            >
+              Admin Login
             </Link>
-          ))}
-        </nav>
+          ) : (
+            <Link
+              className={`navButton ${isActive(pathname, "/setup/admin") ? "isActive" : ""}`}
+              href="/setup/admin"
+            >
+              Setup Admin
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );

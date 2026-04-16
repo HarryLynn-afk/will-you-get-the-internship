@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getCurrentSession } from "../../../utils/auth";
+import { isValidJobRole } from "../../../data/jobRoles";
 import { createQuestion, getRandomQuestions, listQuestions } from "../../../utils/repository";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +15,7 @@ function validateQuestionPayload(body) {
     correct_answer: String(body.correct_answer || "")
       .trim()
       .toUpperCase(),
+    role: String(body.role || "").trim(),
   };
 
   const isValid =
@@ -21,7 +24,8 @@ function validateQuestionPayload(body) {
     payload.option_b &&
     payload.option_c &&
     payload.option_d &&
-    ["A", "B", "C", "D"].includes(payload.correct_answer);
+    ["A", "B", "C", "D"].includes(payload.correct_answer) &&
+    isValidJobRole(payload.role);
 
   return isValid ? payload : null;
 }
@@ -29,18 +33,37 @@ function validateQuestionPayload(body) {
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const all = searchParams.get("all");
+  const role = String(searchParams.get("role") || "").trim();
 
-  const questions = all ? await listQuestions() : await getRandomQuestions(5);
+  if (all) {
+    const session = await getCurrentSession();
+
+    if (!session || session.role !== "admin") {
+      return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+    }
+  }
+
+  if (!all && role && !isValidJobRole(role)) {
+    return NextResponse.json({ error: "Please choose a valid job role." }, { status: 400 });
+  }
+
+  const questions = all ? await listQuestions() : await getRandomQuestions(5, role);
   return NextResponse.json(questions);
 }
 
 export async function POST(request) {
+  const session = await getCurrentSession();
+
+  if (!session || session.role !== "admin") {
+    return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+  }
+
   const body = await request.json();
   const payload = validateQuestionPayload(body);
 
   if (!payload) {
     return NextResponse.json(
-      { error: "Please provide a full question and a valid correct answer." },
+      { error: "Please provide a full question, role, and a valid correct answer." },
       { status: 400 },
     );
   }

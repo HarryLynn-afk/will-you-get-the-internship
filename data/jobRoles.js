@@ -8,3 +8,7 @@ export const JOB_ROLES = [
   "UI/UX Designer",
   "Mobile Developer",
 ];
+
+export function isValidJobRole(role) {
+  return JOB_ROLES.includes(String(role || "").trim());
+}

@@ -6,11 +6,13 @@ function clone(value) {
 
 function createStore() {
   return {
+    users: [],
     questions: sampleQuestions.map((question) => ({
       ...question,
       created_at: new Date().toISOString(),
     })),
     results: [],
+    nextUserId: 1,
     nextQuestionId: sampleQuestions.length + 1,
     nextResultId: 1,
   };
@@ -29,17 +31,28 @@ function sortResults(results) {
   });
 }
 
-export function listLocalQuestions() {
+export function listLocalQuestions(role = "") {
+  const safeRole = String(role || "").trim();
+
   return clone(
-    [...store.questions].sort((left, right) => {
-      return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
-    }),
+    [...store.questions]
+      .filter((question) => {
+        return safeRole ? question.role === safeRole : true;
+      })
+      .sort((left, right) => {
+        return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
+      }),
   );
 }
 
-export function listRandomLocalQuestions(limit = 5) {
+export function listRandomLocalQuestions(limit = 5, role = "") {
+  const safeRole = String(role || "").trim();
+
   return clone(
     [...store.questions]
+      .filter((question) => {
+        return safeRole ? question.role === safeRole : true;
+      })
       .sort(() => Math.random() - 0.5)
       .slice(0, limit),
   );
@@ -116,4 +129,27 @@ export function deleteLocalResult(id) {
 
   store.results.splice(index, 1);
   return true;
+}
+
+export function countLocalAdminUsers() {
+  return store.users.filter((user) => user.role === "admin").length;
+}
+
+export function getLocalUserByEmail(email) {
+  const safeEmail = String(email || "").trim().toLowerCase();
+  const user = store.users.find((item) => item.email === safeEmail);
+  return user ? clone(user) : null;
+}
+
+export function createLocalUser(payload) {
+  const user = {
+    id: store.nextUserId++,
+    email: String(payload.email || "").trim().toLowerCase(),
+    password_hash: payload.password_hash,
+    role: payload.role || "user",
+    created_at: new Date().toISOString(),
+  };
+
+  store.users.push(user);
+  return clone(user);
 }

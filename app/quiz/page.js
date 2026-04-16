@@ -33,13 +33,20 @@ export default function QuizPage() {
 
     async function loadQuestions() {
       try {
-        const response = await fetch("/api/questions");
+        const response = await fetch(
+          `/api/questions?role=${encodeURIComponent(storedRole)}`,
+        );
 
         if (!response.ok) {
           throw new Error("Could not load quiz questions.");
         }
 
         const data = await response.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error(`No questions are available for ${storedRole} yet.`);
+        }
+
         setQuestions(data);
       } catch (loadError) {
         setError(loadError.message || "Could not load quiz questions.");

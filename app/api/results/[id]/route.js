@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCurrentSession } from "../../../../utils/auth";
 import {
   deleteResult,
   getResultById,
@@ -18,6 +19,12 @@ export async function GET(_request, { params }) {
 }
 
 export async function DELETE(_request, { params }) {
+  const session = await getCurrentSession();
+
+  if (!session || session.role !== "admin") {
+    return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+  }
+
   const routeParams = await params;
   const result = await getResultById(routeParams.id);
 

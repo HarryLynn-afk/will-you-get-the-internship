@@ -97,6 +97,13 @@ textarea {
   flex-wrap: wrap;
 }
 
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .navLink {
   padding: 10px 14px;
   border-radius: 999px;
@@ -113,6 +120,24 @@ textarea {
   color: var(--text);
 }
 
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(103, 67, 42, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.navButton:hover,
+.navButton.isActive {
+  background: rgba(198, 77, 39, 0.12);
+}
+
 .shell {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
@@ -121,6 +146,12 @@ textarea {
 
 .shell--narrow {
   width: min(860px, calc(100% - 32px));
+}
+
+.authShell {
+  display: grid;
+  place-items: center;
+  padding-top: 24px;
 }
 
 .heroGrid {
@@ -148,6 +179,12 @@ textarea {
 .heroCard,
 .panel {
   padding: 32px;
+}
+
+.authCard {
+  width: min(100%, 540px);
+  display: grid;
+  gap: 20px;
 }
 
 .heroTitle,
@@ -363,6 +400,15 @@ textarea {
 
 .formMessage.isError {
   color: var(--danger);
+}
+
+.tinyText {
+  font-size: 0.92rem;
+}
+
+.inlineLink {
+  color: var(--primary-dark);
+  font-weight: 700;
 }
 
 .pageHeader,

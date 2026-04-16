@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { isValidJobRole } from "../../../../data/jobRoles";
+import { getCurrentSession } from "../../../../utils/auth";
 import {
   deleteQuestion,
   getQuestionById,
@@ -17,6 +19,7 @@ function validateQuestionPayload(body) {
     correct_answer: String(body.correct_answer || "")
       .trim()
       .toUpperCase(),
+    role: String(body.role || "").trim(),
   };
 
   const isValid =
@@ -25,19 +28,26 @@ function validateQuestionPayload(body) {
     payload.option_b &&
     payload.option_c &&
     payload.option_d &&
-    ["A", "B", "C", "D"].includes(payload.correct_answer);
+    ["A", "B", "C", "D"].includes(payload.correct_answer) &&
+    isValidJobRole(payload.role);
 
   return isValid ? payload : null;
 }
 
 export async function PUT(request, { params }) {
+  const session = await getCurrentSession();
+
+  if (!session || session.role !== "admin") {
+    return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+  }
+
   const routeParams = await params;
   const body = await request.json();
   const payload = validateQuestionPayload(body);
 
   if (!payload) {
     return NextResponse.json(
-      { error: "Please provide a full question and a valid correct answer." },
+      { error: "Please provide a full question, role, and a valid correct answer." },
       { status: 400 },
     );
   }
@@ -52,6 +62,12 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(_request, { params }) {
+  const session = await getCurrentSession();
+
+  if (!session || session.role !== "admin") {
+    return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+  }
+
   const routeParams = await params;
   const question = await getQuestionById(routeParams.id);
 
