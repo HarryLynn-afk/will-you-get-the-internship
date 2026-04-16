@@ -1232,6 +1232,63 @@ textarea {
   color: var(--text);
 }
 
+/* ── Progress bar ── */
+.progressBarTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(111, 43, 232, 0.12);
+  margin: 12px 0 22px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6f2be8, #a855f7);
+  transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Loading spinner ── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(111, 43, 232, 0.18);
+  border-top-color: #6f2be8;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  margin: 0 auto 24px;
+}
+
+/* ── Custom select arrow ── */
+select.textInput {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2365557f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+  cursor: pointer;
+}
+
+/* ── Leaderboard top-3 rank colours ── */
+.leaderboardRank--gold {
+  background: rgba(255, 193, 7, 0.18);
+  color: #9a7000;
+}
+
+.leaderboardRank--silver {
+  background: rgba(158, 158, 158, 0.18);
+  color: #5a5a5a;
+}
+
+.leaderboardRank--bronze {
+  background: rgba(176, 141, 87, 0.18);
+  color: #7a5a1a;
+}
+
 @media (max-width: 960px) {
   .heroGrid,
   .adminGrid,

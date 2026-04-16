@@ -45,6 +45,7 @@ export default function LeaderboardPage() {
 
       {loading ? (
         <div className="panel statusCard">
+          <div className="spinner" />
           <h2 className="panelTitle">Loading scores...</h2>
         </div>
       ) : error ? (

@@ -30,6 +30,12 @@ export default function QuestionCard({
         <p className="eyebrowLabel">Question {currentIndex + 1}</p>
         <p className="progressPill">{currentIndex + 1} / {totalQuestions}</p>
       </div>
+      <div className="progressBarTrack">
+        <div
+          className="progressBarFill"
+          style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }}
+        />
+      </div>
       <h2 className="questionTitle">{question.question}</h2>
       <div className="optionList">
         {optionKeys.map(([key, field]) => {

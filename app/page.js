@@ -1,4 +1,3 @@
-import Link from "next/link";
 import HomeStartForm from "../components/HomeStartForm";
 
 export default function HomePage() {

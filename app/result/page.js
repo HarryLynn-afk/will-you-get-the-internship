@@ -43,6 +43,7 @@ function ResultPageContent() {
     return (
       <main className="shell shell--narrow">
         <div className="panel statusCard">
+          <div className="spinner" />
           <p className="eyebrowLabel">Calculating verdict</p>
           <h1 className="panelTitle">The recruiter is drafting the email.</h1>
         </div>
@@ -102,6 +103,7 @@ export default function ResultPage() {
       fallback={
         <main className="shell shell--narrow">
           <div className="panel statusCard">
+            <div className="spinner" />
             <p className="eyebrowLabel">Calculating verdict</p>
             <h1 className="panelTitle">The recruiter is drafting the email.</h1>
           </div>

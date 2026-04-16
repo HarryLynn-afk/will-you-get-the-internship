@@ -125,6 +125,7 @@ export default function QuizPage() {
     return (
       <main className="shell shell--narrow">
         <div className="panel statusCard">
+          <div className="spinner" />
           <p className="eyebrowLabel">Loading questions</p>
           <h1 className="panelTitle">The recruiter is warming up.</h1>
         </div>
@@ -159,7 +160,21 @@ export default function QuizPage() {
           <h1 className="panelTitle">{playerName}</h1>
           <p className="mutedText">Applying for {jobRole}</p>
         </div>
-        <div className="scoreChip">Score: {score}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div className="scoreChip">Score: {score}</div>
+          <button
+            className="secondaryButton"
+            type="button"
+            onClick={() => {
+              if (window.confirm("Quit the quiz? Your progress will be lost.")) {
+                router.push("/");
+              }
+            }}
+            disabled={submitting}
+          >
+            Quit
+          </button>
+        </div>
       </section>
 
       <QuestionCard
