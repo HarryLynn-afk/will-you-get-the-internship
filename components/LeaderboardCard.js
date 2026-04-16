@@ -4,6 +4,7 @@ function verdictClass(verdict) {
 
 export default function LeaderboardCard({
   rank,
+  entryId,
   name,
   job_role,
   score,
@@ -13,7 +14,10 @@ export default function LeaderboardCard({
     <article className="leaderboardCard">
       <div className="leaderboardRank">{rank}</div>
       <div className="leaderboardBody">
-        <h3>{name}</h3>
+        <div className="leaderboardNameRow">
+          <h3>{name}</h3>
+          <span className="leaderboardEntryTag">#{entryId}</span>
+        </div>
         <p>{job_role}</p>
       </div>
       <div className="leaderboardMeta">

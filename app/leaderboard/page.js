@@ -72,6 +72,7 @@ export default function LeaderboardPage() {
             >
               <LeaderboardCard
                 rank={index + 1}
+                entryId={result.id}
                 name={result.player_name}
                 job_role={result.job_role}
                 score={result.score}

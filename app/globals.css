@@ -148,6 +148,11 @@ textarea {
   width: min(860px, calc(100% - 32px));
 }
 
+.landingShell {
+  display: grid;
+  gap: 64px;
+}
+
 .authShell {
   display: grid;
   place-items: center;
@@ -159,6 +164,10 @@ textarea {
   grid-template-columns: 1.1fr 0.9fr;
   gap: 32px;
   align-items: stretch;
+}
+
+.landingHero {
+  align-items: start;
 }
 
 .heroCopy,
@@ -179,6 +188,11 @@ textarea {
 .heroCard,
 .panel {
   padding: 32px;
+}
+
+.heroForm {
+  display: grid;
+  gap: 18px;
 }
 
 .authCard {
@@ -242,6 +256,11 @@ textarea {
   color: var(--muted);
 }
 
+.sectionLead {
+  max-width: 34ch;
+  margin: 12px 0 0;
+}
+
 .eyebrowLabel {
   margin: 0;
   font-size: 0.78rem;
@@ -257,6 +276,26 @@ textarea {
 .leaderboardGrid {
   display: grid;
   gap: 16px;
+}
+
+.heroFeatureList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.featurePill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(103, 67, 42, 0.1);
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .heroStats {
@@ -298,6 +337,11 @@ textarea {
 
 .field + .field {
   margin-top: 18px;
+}
+
+.buttonStack {
+  display: grid;
+  gap: 12px;
 }
 
 .fieldLabel {
@@ -409,6 +453,133 @@ textarea {
 .inlineLink {
   color: var(--primary-dark);
   font-weight: 700;
+}
+
+.landingSection {
+  display: grid;
+  gap: 24px;
+}
+
+.sectionIntro {
+  max-width: 44rem;
+  display: grid;
+  gap: 8px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.processGrid,
+.outcomeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.processCard,
+.outcomeCard,
+.teaserStat {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 250, 244, 0.72);
+  box-shadow: var(--shadow);
+}
+
+.processCard,
+.outcomeCard {
+  padding: 24px;
+}
+
+.processCard h3,
+.outcomeCard h3,
+.teaserStat p {
+  margin: 0;
+}
+
+.processCard h3,
+.outcomeCard h3 {
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.processCard p,
+.outcomeCard p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.processNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  min-height: 42px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: rgba(198, 77, 39, 0.12);
+  color: var(--primary-dark);
+  font-family: var(--display-font);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.outcomeCard {
+  display: grid;
+  gap: 18px;
+}
+
+.outcomeCard--hired {
+  background: linear-gradient(145deg, rgba(235, 255, 247, 0.9), rgba(255, 250, 244, 0.82));
+}
+
+.outcomeCard--ghosted {
+  background: linear-gradient(145deg, rgba(255, 247, 219, 0.92), rgba(255, 250, 244, 0.82));
+}
+
+.outcomeCard--rejected {
+  background: linear-gradient(145deg, rgba(255, 234, 236, 0.92), rgba(255, 250, 244, 0.82));
+}
+
+.leaderboardTeaser {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: 24px;
+  align-items: center;
+}
+
+.leaderboardTeaserCopy {
+  display: grid;
+  gap: 16px;
+}
+
+.teaserStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.teaserStat {
+  padding: 18px;
+}
+
+.teaserStat span {
+  display: block;
+  font-family: var(--display-font);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.teaserStat p {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .pageHeader,
@@ -638,6 +809,28 @@ textarea {
   font-size: 1.15rem;
 }
 
+.leaderboardNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.leaderboardEntryTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(103, 67, 42, 0.08);
+  border: 1px solid rgba(103, 67, 42, 0.12);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 .leaderboardBody p {
   margin: 6px 0 0;
   color: var(--muted);
@@ -719,13 +912,17 @@ textarea {
 
 @media (max-width: 960px) {
   .heroGrid,
-  .adminGrid {
+  .adminGrid,
+  .processGrid,
+  .outcomeGrid,
+  .leaderboardTeaser {
     grid-template-columns: 1fr;
   }
 
   .heroStats,
   .formGrid,
-  .detailGrid {
+  .detailGrid,
+  .teaserStats {
     grid-template-columns: 1fr;
   }
 }
