@@ -32,10 +32,6 @@ export default function HomeStartForm() {
       <div>
         <p className="eyebrowLabel">Start the chaos</p>
         <h2 className="panelTitle">Tell the recruiter who you think you are</h2>
-        <p className="mutedText sectionLead">
-          No signup, no setup, no second warm-up screen. Pick a role and walk
-          straight into the interview.
-        </p>
       </div>
 
       <div className="field">
@@ -90,11 +86,6 @@ export default function HomeStartForm() {
       </div>
 
       {formError ? <p className="formMessage isError">{formError}</p> : null}
-
-      <p className="mutedText tinyText">
-        Every completed run gets a verdict and lands on the public board with
-        its own result tag.
-      </p>
     </form>
   );
 }

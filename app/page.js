@@ -8,11 +8,6 @@ export default function HomePage() {
         <div className="heroCopy">
           <p className="eyebrowLabel">Mock interview quiz</p>
           <h1 className="heroTitle">Will You Get the Internship?</h1>
-          <p className="heroText">
-            Think you can survive a real tech interview? Pick your dream role,
-            answer five questions, and let an AI recruiter decide whether you get
-            hired, ghosted, or publicly roasted.
-          </p>
           <div className="heroFeatureList">
             <span className="featurePill">Role-based questions</span>
             <span className="featurePill">AI verdict + roast</span>

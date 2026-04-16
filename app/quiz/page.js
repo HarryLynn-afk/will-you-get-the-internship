@@ -153,7 +153,7 @@ export default function QuizPage() {
 
   return (
     <main className="shell shell--narrow">
-      <section className="quizIntro">
+      <section className="quizIntro quizHeader">
         <div>
           <p className="eyebrowLabel">Live interview in progress</p>
           <h1 className="panelTitle">{playerName}</h1>
@@ -171,7 +171,7 @@ export default function QuizPage() {
         correctAnswer={currentQuestion.correct_answer}
       />
 
-      <p className="helperText">
+      <p className="helperText helperText--quiz">
         {submitting
           ? "Recruiter is finalizing the roast..."
           : "Answer one question at a time. You cannot change it after clicking."}

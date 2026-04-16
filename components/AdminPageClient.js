@@ -20,6 +20,8 @@ export default function AdminPageClient() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     async function loadQuestions() {
@@ -54,6 +56,7 @@ export default function AdminPageClient() {
   function resetForm() {
     setForm(emptyForm);
     setEditingId(null);
+    setError("");
   }
 
   async function handleSubmit(event) {
@@ -135,12 +138,37 @@ export default function AdminPageClient() {
     }
   }
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredQuestions = questions.filter((question) => {
+    const matchesRole = roleFilter === "All" || question.role === roleFilter;
+    const matchesSearch =
+      normalizedSearch === "" ||
+      [
+        question.question,
+        question.option_a,
+        question.option_b,
+        question.option_c,
+        question.option_d,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedSearch);
+
+    return matchesRole && matchesSearch;
+  });
+
+  function roleCount(role) {
+    return questions.filter((question) => question.role === role).length;
+  }
+
+  const hasActiveFilters = roleFilter !== "All" || normalizedSearch !== "";
+
   return (
     <main className="shell">
-      <section className="pageHeader">
+      <section className="pageHeader adminHeader">
         <div>
           <p className="eyebrowLabel">Question control room</p>
-          <h1 className="pageTitle">Admin</h1>
+          <h1 className="pageTitle">Question Manager</h1>
           <p className="mutedText">
             Create, edit, and delete interview questions without leaving the app.
           </p>
@@ -284,27 +312,97 @@ export default function AdminPageClient() {
             <div>
               <p className="eyebrowLabel">Stored questions</p>
               <h2 className="panelTitle">
-                {loading ? "Loading..." : `${questions.length} total`}
+                {loading ? "Loading..." : `${filteredQuestions.length} shown`}
               </h2>
+              {!loading ? (
+                <p className="mutedText questionBankSummary">
+                  {hasActiveFilters
+                    ? `Filtered from ${questions.length} total questions`
+                    : `${questions.length} total questions in the bank`}
+                </p>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="questionBankControls">
+            <div className="roleFilterBar" aria-label="Filter questions by role">
+              <button
+                className={`roleFilterChip ${roleFilter === "All" ? "isActive" : ""}`}
+                type="button"
+                onClick={() => setRoleFilter("All")}
+              >
+                All
+                <span>{questions.length}</span>
+              </button>
+              {JOB_ROLES.map((role) => (
+                <button
+                  key={role}
+                  className={`roleFilterChip ${roleFilter === role ? "isActive" : ""}`}
+                  type="button"
+                  onClick={() => setRoleFilter(role)}
+                >
+                  {role}
+                  <span>{roleCount(role)}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="field questionSearchField">
+              <label className="fieldLabel" htmlFor="question-search">
+                Search questions
+              </label>
+              <input
+                className="textInput fullWidth"
+                id="question-search"
+                name="question-search"
+                type="search"
+                placeholder="Search question text or option copy"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
             </div>
           </div>
 
           {loading ? (
             <p className="mutedText">Loading question bank...</p>
-          ) : questions.length === 0 ? (
+          ) : filteredQuestions.length === 0 ? (
             <div className="emptyState">
-              <p className="mutedText">No questions yet. Add your first one above.</p>
+              <p className="questionEmptyTitle">
+                {questions.length === 0 ? "No questions yet" : "No matching questions"}
+              </p>
+              <p className="mutedText">
+                {questions.length === 0
+                  ? "Add your first question on the left to start building the bank."
+                  : roleFilter !== "All"
+                    ? `No ${roleFilter} questions match your current search. Try another role or clear the search field.`
+                    : "Nothing matches your current search. Try a broader keyword."}
+              </p>
             </div>
           ) : (
             <div className="questionBankList">
-              {questions.map((question) => (
-                <article key={question.id} className="questionBankItem">
-                  <div className="questionBankTop">
-                    <div className="inlineActions">
-                      <span className="progressPill">{question.role || "Unassigned role"}</span>
-                      <span className="progressPill">Correct: {question.correct_answer}</span>
+              {filteredQuestions.map((question) => (
+                <article
+                  key={question.id}
+                  className={`questionBankItem ${
+                    editingId === question.id ? "isEditing" : ""
+                  }`}
+                >
+                  <h3>{question.question}</h3>
+
+                  <div className="questionBankMeta">
+                    <div className="questionMetaRow">
+                      <span className="questionMetaPill">
+                        {question.role || "Unassigned role"}
+                      </span>
+                      <span className="questionMetaPill">
+                        Correct: {question.correct_answer}
+                      </span>
+                      {editingId === question.id ? (
+                        <span className="questionMetaPill isEditing">Editing now</span>
+                      ) : null}
                     </div>
-                    <div className="inlineActions">
+
+                    <div className="questionActions">
                       <button
                         className="miniButton"
                         type="button"
@@ -319,15 +417,18 @@ export default function AdminPageClient() {
                       >
                         Delete
                       </button>
-                    </div>
+                    </div> 
                   </div>
-                  <h3>{question.question}</h3>
-                  <ul className="optionSummary">
-                    <li>A. {question.option_a}</li>
-                    <li>B. {question.option_b}</li>
-                    <li>C. {question.option_c}</li>
-                    <li>D. {question.option_d}</li>
-                  </ul>
+
+                  <details className="questionOptions" open={editingId === question.id}>
+                    <summary>View answer options</summary>
+                    <ul className="optionSummary optionSummary--dense">
+                      <li>A. {question.option_a}</li>
+                      <li>B. {question.option_b}</li>
+                      <li>C. {question.option_c}</li>
+                      <li>D. {question.option_d}</li>
+                    </ul>
+                  </details>
                 </article>
               ))}
             </div>

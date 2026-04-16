@@ -9,13 +9,20 @@ export default function ResultCard({ name, job_role, score, verdict, roast }) {
         <p className="eyebrowLabel">Final recruiter verdict</p>
         <span className={`verdictBadge ${verdictClass(verdict)}`}>{verdict}</span>
       </div>
-      <h2 className="resultName">{name}</h2>
-      <p className="resultRole">Applied for {job_role}</p>
-      <div className="scoreBurst">
-        <span className="scoreNumber">{score}</span>
-        <span className="scoreLabel">out of 5</span>
+      <div className="resultIdentity">
+        <h2 className="resultName">{name}</h2>
+        <p className="resultRole">Applied for {job_role}</p>
       </div>
-      <p className="resultRoast">{roast}</p>
+      <div className="resultRoastCard">
+        <p className="resultRoast resultRoast--featured">{roast}</p>
+      </div>
+      <div className="resultFooter">
+        <p className="eyebrowLabel resultFooterLabel">Interview score</p>
+        <div className="scoreBurst scoreBurst--bottom">
+          <span className="scoreNumber">{score}</span>
+          <span className="scoreLabel">out of 5</span>
+        </div>
+      </div>
     </article>
   );
 }

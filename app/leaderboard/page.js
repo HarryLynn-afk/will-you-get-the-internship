@@ -32,7 +32,7 @@ export default function LeaderboardPage() {
 
   return (
     <main className="shell">
-      <section className="pageHeader">
+      <section className="pageHeader leaderboardHeader">
         <div>
           <p className="eyebrowLabel">Hall of fame and shame</p>
           <h1 className="pageTitle">Leaderboard</h1>

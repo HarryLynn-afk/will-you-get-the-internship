@@ -69,7 +69,7 @@ function ResultPageContent() {
 
   return (
     <main className="shell shell--narrow">
-      <section className="resultIntro">
+      <section className="resultIntro resultHeader">
         <div>
           <p className="eyebrowLabel">Interview complete</p>
           <h1 className="panelTitle">Your recruiter had thoughts.</h1>
@@ -84,7 +84,7 @@ function ResultPageContent() {
         roast={result.roast}
       />
 
-      <div className="actionRow">
+      <div className="actionRow resultActions">
         <Link className="primaryButton" href="/">
           Play Again
         </Link>
